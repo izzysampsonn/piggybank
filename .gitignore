@@ -2,3 +2,4 @@
 /Pig/__pycache__
 /piggyBank/__init__.py 
 /piggyBank/migrations/__init__.py
+.env
