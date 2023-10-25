@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Piggy Bank</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f9ebb2; /* Light yellow background */
+      }
+      .navbar {
+        background-color: #ff7e67; /* Reddish-orange navbar */
+      }
+      .navbar-brand {
+        color: white;
+      }
+      .jumbotron {
+        background-color: #ffe156; /* Yellow jumbotron */
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand" href="/">Home</a>
+      <a class="navbar-brand" href="/piggybank">My Piggy Bank</a>
+      <div class="ml-auto">
+        <a class="btn btn-primary" href="/signin">Sign In</a>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    {% block content %} {% endblock %}
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
