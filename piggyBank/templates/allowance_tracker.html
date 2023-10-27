@@ -6,7 +6,7 @@
   <div class="card mt-4">
     <div class="card-body">
       <h5 class="card-title">Your Allowance</h5>
-      <h2>${{ allowance }}</h2>
+      <h2>${{ current_balance }}</h2>
 
       <form method="post" action="{% url 'track_allowance' %}">
         {% csrf_token %}
@@ -37,7 +37,24 @@
     <h5>Transaction History</h5>
     {% for transaction in transactions %}
     <p>{{ transaction }}</p>
-    {% endfor %}
+    {% endfor %} {% if error_message %}
+    <p class="text-danger">{{ error_message }}</p>
+    {% endif %}
+  </div>
+    <!-- Display current goals (if any) -->
+    {% if goals %}
+    <div class="mt-4">
+      <h5>Current Goals</h5>
+      {% for goal in goals %}
+      <p>{{ goal.description }} - Target: ${{ goal.amount }} by {{ goal.target_date }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+  
+    <!-- Button to set a new goal -->
+    <div class="mt-4">
+      <a href="{% url 'goal_form' %}" class="btn btn-primary">Set a New Goal</a>
+    </div>
   </div>
 </div>
 {% endblock %}
