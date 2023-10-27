@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5">
+  <h2>My Piggy Bank</h2>
+  <p>Track your savings and manage your piggy bank here.</p>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <h5 class="card-title">Your Allowance</h5>
+      <h2>${{ allowance }}</h2>
+
+      <form method="post" action="{% url 'track_allowance' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="amount">Enter Amount:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="amount"
+            name="amount"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="action">Action:</label>
+          <select class="form-control" id="action" name="action" required>
+            <option value="deposit">Deposit</option>
+            <option value="withdraw">Withdraw</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Display transactions -->
+  <div class="mt-4">
+    <h5>Transaction History</h5>
+    {% for transaction in transactions %}
+    <p>{{ transaction }}</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

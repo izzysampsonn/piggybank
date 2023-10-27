@@ -20,5 +20,5 @@ from piggyBank import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('piggybank/', views.piggy_bank, name='piggy_bank'),
+    path('track_allowance/', views.track_allowance, name='track_allowance'),
 ]
