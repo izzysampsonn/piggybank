@@ -41,15 +41,18 @@
     <p class="text-danger">{{ error_message }}</p>
     {% endif %}
   </div>
-    <!-- Display current goals (if any) -->
-    {% if goals %}
-    <div class="mt-4">
-      <h5>Current Goals</h5>
-      {% for goal in goals %}
-      <p>{{ goal.description }} - Target: ${{ goal.amount }} by {{ goal.target_date }}</p>
-      {% endfor %}
-    </div>
-    {% endif %}
+ <!-- Display current goals (if any) -->
+ {% if goals %}
+ <div class="mt-4">
+   <h5>Current Goals</h5>
+   {% for goal in goals %}
+   <p>{{ goal.description }} - Target: ${{ goal.amount }} - Progress: {{ goal.progress }}%</p>
+   <div class="progress">
+     <div class="progress-bar" role="progressbar" style="width: {{ goal.progress }}%;" aria-valuenow="{{ goal.progress }}" aria-valuemin="0" aria-valuemax="100">{{ goal.progress }}%</div>
+   </div>
+   {% endfor %}
+ </div>
+ {% endif %}
   
     <!-- Button to set a new goal -->
     <div class="mt-4">
