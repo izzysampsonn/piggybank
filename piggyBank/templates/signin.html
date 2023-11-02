@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block content %}
+<div class="container mt-5">
+  <h2>Sign In</h2>
+  <form method="post" action="{% url 'signin' %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="username">What is your name?:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="username"
+        name="username"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="age">How old are you?:</label>
+      <input type="number" class="form-control" id="age" name="age" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Sign In</button>
+  </form>
+</div>
+{% endblock %}

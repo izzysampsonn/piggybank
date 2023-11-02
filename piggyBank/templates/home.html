@@ -1,6 +1,11 @@
 {% extends "base.html" %} {% block content %}
 <div class="jumbotron text-center">
-  <h1>Welcome to Piggy Bank!</h1>
+  {% if username %}
+  <h2>Welcome, {{ username }}!</h2>
+  {% comment %} Later, once age specific links are set up, send the user to the
+  appropriate html pages {% endcomment %} {% else %}
+  <p>Welcome to Piggy Bank!</p>
+  {% endif %}
   <p>Start saving money in your digital piggy bank. It's fun and easy!</p>
   <p>
     To get started, create your own Piggy Bank account or click on the 'My Piggy

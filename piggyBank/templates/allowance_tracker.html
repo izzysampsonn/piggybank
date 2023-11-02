@@ -23,8 +23,13 @@
         <div class="form-group">
           <label for="action">Action:</label>
           <select class="form-control" id="action" name="action" required>
+            {% if age < 10 %}
+            <option value="deposit">Add</option>
+            <option value="withdraw">Take Away</option>
+            {% else %}
             <option value="deposit">Deposit</option>
             <option value="withdraw">Withdraw</option>
+            {% endif %}
           </select>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -32,32 +37,89 @@
     </div>
   </div>
 
-  <!-- Display transactions -->
+  <!-- Display transactions as dropdown tab -->
   <div class="mt-4">
-    <h5>Transaction History</h5>
-    {% for transaction in transactions %}
-    <p>{{ transaction }}</p>
-    {% endfor %} {% if error_message %}
-    <p class="text-danger">{{ error_message }}</p>
-    {% endif %}
-  </div>
- <!-- Display current goals (if any) -->
- {% if goals %}
- <div class="mt-4">
-   <h5>Current Goals</h5>
-   {% for goal in goals %}
-   <p>{{ goal.description }} - Target: ${{ goal.amount }} - Progress: {{ goal.progress }}%</p>
-   <div class="progress">
-     <div class="progress-bar" role="progressbar" style="width: {{ goal.progress }}%;" aria-valuenow="{{ goal.progress }}" aria-valuemin="0" aria-valuemax="100">{{ goal.progress }}%</div>
-   </div>
-   {% endfor %}
- </div>
- {% endif %}
-  
-    <!-- Button to set a new goal -->
-    <div class="mt-4">
-      <a href="{% url 'goal_form' %}" class="btn btn-primary">Set a New Goal</a>
+    <div id="accordion">
+      <div class="card">
+        <div class="card-header" id="balanceHistoryHeading">
+          <h5 class="mb-0">
+            <button
+              class="btn btn-link"
+              data-toggle="collapse"
+              data-target="#balanceHistoryCollapse"
+              aria-expanded="true"
+              aria-controls="balanceHistoryCollapse"
+            >
+              Balance History
+            </button>
+          </h5>
+        </div>
+
+        <div
+          id="balanceHistoryCollapse"
+          class="collapse show"
+          aria-labelledby="balanceHistoryHeading"
+          data-parent="#accordion"
+        >
+          <div class="card-body">
+            {% if transactions %} {% for transaction in transactions %}
+            <p class="mb-0">{{ transaction }}</p>
+            <div class="dropdown-divider"></div>
+            {% endfor %} {% else %}
+            <span>No transactions yet.</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Display current goals as dropdown tab -->
+  {% if goals %}
+  <div class="mt-4">
+    <h5>Current Goals</h5>
+    <div class="accordion" id="goalAccordion">
+      {% for goal in goals %}
+      <div class="card">
+        <div class="card-header" id="goal{{ forloop.counter }}">
+          <button
+            class="btn btn-link"
+            type="button"
+            data-toggle="collapse"
+            data-target="#goalCollapse{{ forloop.counter }}"
+            aria-expanded="true"
+            aria-controls="goalCollapse{{ forloop.counter }}"
+          >
+            {{ goal.description }}
+          </button>
+        </div>
+
+        <div
+          id="goalCollapse{{ forloop.counter }}"
+          class="collapse"
+          aria-labelledby="goal{{ forloop.counter }}"
+          data-parent="#goalAccordion"
+        >
+          <div class="card-body">
+            {% if goal.image %}
+            <img
+              src="data:image;base64,{{ goal.image }}"
+              class="img-fluid mb-2"
+              alt="{{ goal.description }} Image"
+            />
+            {% endif %} Target: ${{ goal.amount }}<br />
+            Progress: {{ goal.progress }}%
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Button to set a new goal -->
+  <div class="mt-4">
+    <a href="{% url 'goal_form' %}" class="btn btn-primary">Set a New Goal</a>
   </div>
 </div>
 {% endblock %}

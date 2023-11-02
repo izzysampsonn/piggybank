@@ -24,4 +24,6 @@ urlpatterns = [
     path('goals/', views.goal_list, name='goal_list'),
     path('goal_form/', views.goal_form, name='goal_form'),
     path('save_goal/', views.save_goal, name='save_goal'),
+    path('signin/', views.signin, name='signin'),
+    path('signout/', views.signout, name='signout'),
 ]

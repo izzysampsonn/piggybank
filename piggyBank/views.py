@@ -1,10 +1,7 @@
 from django.shortcuts import render
-import pandas as pd
-import matplotlib.pyplot as plt
-from django.http import HttpResponse
-from django.http import JsonResponse
-from io import BytesIO
-import json
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import base64
+import io
 
 # Create your views here.
 
@@ -18,11 +15,13 @@ transactions = []
 current_balance = 0
 # Initialize a global goal array to store goal objects
 goals = []
+username = ''
+age = 0
 
 
 def track_allowance(request):
     # Use the global variables
-    global transactions, current_balance, goals
+    global transactions, current_balance, goals, age
 
     if request.method == 'POST':
         amount = int(request.POST.get('amount'))
@@ -30,12 +29,23 @@ def track_allowance(request):
 
         # Determine if it's a deposit or withdrawal and update the transactions list and current balance
         if action == 'deposit':
-            transactions.append(f'You deposited ${amount} dollars.')
+            if int(age) < 10:
+                action_text = 'added'
+            else:
+                action_text = 'deposited'
+        else:
+            if int(age) < 10:
+                action_text = 'took away'
+            else:
+                action_text = 'withdrew'
+
+        transactions.append(f'You {action_text} ${amount} dollars.')
+
+        if action == 'deposit':
             current_balance += amount
         elif action == 'withdraw':
             if amount > current_balance:
-                return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'error_message': 'Insufficient funds!', 'goals': goals})
-            transactions.append(f'You withdrew ${amount} dollars.')
+                return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'error_message': 'Insufficient funds!', 'goals': goals, 'age': age})
             current_balance -= amount
 
         # Update progress bars for goals after form submission
@@ -46,7 +56,7 @@ def track_allowance(request):
                 goal['progress'] = (current_balance / goal['amount']) * 100
 
     # Pass the current balance, transactions list, and updated goals array to the template
-    return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'goals': goals})
+    return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'goals': goals, 'age': age})
 
 
 def goal_list(request):
@@ -63,17 +73,54 @@ def save_goal(request):
     if request.method == 'POST':
         item_name = request.POST.get('itemName')
         item_price = int(request.POST.get('itemPrice'))
+        item_image = request.FILES.get('itemImage')  # Get the uploaded file
+
+        # Check if an image was uploaded
+        if item_image:
+            # Read the uploaded file into memory
+            img_content = item_image.read()
+            # Create an InMemoryUploadedFile object from the content
+            img_io = io.BytesIO(img_content)
+            img_file = InMemoryUploadedFile(
+                img_io, None, item_image.name, item_image.content_type, len(img_content), None)
+
+            # Convert the image file to base64 for storage
+            base64_image = base64.b64encode(img_file.read()).decode('utf-8')
 
         # Create a new goal object based on the submitted data
         goal = {
             'description': item_name,
             'amount': item_price,
-            'progress': 0  # Initialize progress to 0, indicating no progress made yet
+            'progress': 0,  # Initialize progress to 0, indicating no progress made yet
+            # Store the base64 image, or None if no image was uploaded
+            'image': base64_image if item_image else None
         }
+
         if current_balance > 0:
-            goal['progress'] = (current_balance/goal['amount']) * 100
+            goal['progress'] = (current_balance / goal['amount']) * 100
+
         # Add the new goal to the global goals array
         goals.append(goal)
 
-    # Redirect to the allowance tracker page (or goal list page)
-        return render(request, 'add_Goals.html')
+    # Redirect to the allowance tracker page
+    return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'goals': goals, 'age': age})
+
+
+def signin(request):
+    global username, age
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        age = request.POST.get('age')
+        # Redirect to the home page and pass the username as context
+        return render(request, 'home.html', {'username': username})
+    else:
+        return render(request, 'signin.html')
+
+
+def signout(request):
+    global username, age
+    # Clear the username to sign the user out
+    username = ""
+    age = 0
+    # Redirect to the home page
+    return render(request, 'home.html')
