@@ -4,12 +4,6 @@ import base64
 import io
 
 # Create your views here.
-
-
-def home(request):
-    return render(request, 'home.html')  # Render the home.html template
-
-
 # Initialize global variables for transactions and current balance
 transactions = []
 current_balance = 0
@@ -17,6 +11,9 @@ current_balance = 0
 goals = []
 username = ''
 age = 0
+
+def home(request):
+    return render(request, 'home.html', {'username': username})  # Render the home.html template
 
 
 def track_allowance(request):
@@ -29,12 +26,12 @@ def track_allowance(request):
 
         # Determine if it's a deposit or withdrawal and update the transactions list and current balance
         if action == 'deposit':
-            if int(age) < 10:
+            if age < 10:
                 action_text = 'added'
             else:
                 action_text = 'deposited'
         else:
-            if int(age) < 10:
+            if age < 10:
                 action_text = 'took away'
             else:
                 action_text = 'withdrew'
@@ -45,7 +42,7 @@ def track_allowance(request):
             current_balance += amount
         elif action == 'withdraw':
             if amount > current_balance:
-                return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'error_message': 'Insufficient funds!', 'goals': goals, 'age': age})
+                return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'error_message': 'Insufficient funds!', 'goals': goals, 'age': age, 'username': username})
             current_balance -= amount
 
         # Update progress bars for goals after form submission
@@ -56,7 +53,7 @@ def track_allowance(request):
                 goal['progress'] = (current_balance / goal['amount']) * 100
 
     # Pass the current balance, transactions list, and updated goals array to the template
-    return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'goals': goals, 'age': age})
+    return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'goals': goals, 'age': age, 'username': username})
 
 
 def goal_list(request):
@@ -66,7 +63,7 @@ def goal_list(request):
 
 
 def goal_form(request):
-    return render(request, 'add_Goals.html')
+    return render(request, 'add_Goals.html', {'username': username})
 
 
 def save_goal(request):
@@ -103,7 +100,7 @@ def save_goal(request):
         goals.append(goal)
 
     # Redirect to the allowance tracker page
-    return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'goals': goals, 'age': age})
+    return render(request, 'allowance_tracker.html', {'current_balance': current_balance, 'transactions': transactions, 'goals': goals, 'age': age, 'username': username})
 
 
 def signin(request):

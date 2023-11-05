@@ -104,7 +104,7 @@
             {% if goal.image %}
             <img
               src="data:image;base64,{{ goal.image }}"
-              class="img-fluid mb-2"
+              style="max-height: 300px; max-width: 600px; margin-top: 10px"
               alt="{{ goal.description }} Image"
             />
             {% endif %} Target: ${{ goal.amount }}<br />
