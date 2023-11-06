@@ -5,7 +5,7 @@
 
   <div class="card mt-4">
     <div class="card-body">
-      <h5 class="card-title">Your Allowance</h5>
+      <h5 class="card-title">Current Balance</h5>
       <h2>${{ current_balance }}</h2>
 
       <form method="post" action="{% url 'track_allowance' %}">
@@ -101,14 +101,30 @@
           data-parent="#goalAccordion"
         >
           <div class="card-body">
-            {% if goal.image %}
-            <img
-              src="data:image;base64,{{ goal.image }}"
-              style="max-height: 300px; max-width: 600px; margin-top: 10px"
-              alt="{{ goal.description }} Image"
-            />
-            {% endif %} Target: ${{ goal.amount }}<br />
-            Progress: {{ goal.progress }}%
+            <div style="display: flex; flex-direction: column">
+              {% if goal.image %}
+              <img
+                src="data:image;base64,{{ goal.image }}"
+                style="max-height: 300px; max-width: 600px; margin-top: 10px"
+                alt="{{ goal.description }} Image"
+              />
+              {% endif %} <br />
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  role="progressbar"
+                  style="width: {{ goal.progress }}%;"
+                  aria-valuenow="{{ goal.progress }}"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  {{ goal.progress }}%
+                </div>
+              </div>
+              <br />
+              Target: ${{ goal.amount }}<br />
+              Progress: {{ goal.progress }}%
+            </div>
           </div>
         </div>
       </div>

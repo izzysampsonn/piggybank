@@ -26,12 +26,12 @@ def track_allowance(request):
 
         # Determine if it's a deposit or withdrawal and update the transactions list and current balance
         if action == 'deposit':
-            if age < 10:
+            if int(age) < 10:
                 action_text = 'added'
             else:
                 action_text = 'deposited'
         else:
-            if age < 10:
+            if int(age) < 10:
                 action_text = 'took away'
             else:
                 action_text = 'withdrew'
@@ -94,7 +94,7 @@ def save_goal(request):
         }
 
         if current_balance > 0:
-            goal['progress'] = (current_balance / goal['amount']) * 100
+            goal['progress'] = round((current_balance / goal['amount']) * 100, 2)
 
         # Add the new goal to the global goals array
         goals.append(goal)
